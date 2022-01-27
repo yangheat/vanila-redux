@@ -46,8 +46,17 @@ countStore.subscribe(onChange); */
 const form = document.querySelector("form");
 const input = document.querySelector("input");
 const ul = document.querySelector("ul");
+
 const ADD = "ADD";
 const DELETE = "DELETE";
+
+const addTodo = (text) => {
+  return { type: ADD, text };
+};
+
+const deleteTodo = (id) => {
+  return { type: DELETE, id };
+};
 
 // redux에서 state를 mutated를 하면 안 됨. ex) state.push('1');
 // mutated는 직접적으로 데이터를 입력하는 행위
@@ -55,37 +64,51 @@ const DELETE = "DELETE";
 // 따라서, 정상적으로 사용하기 위해서는 새로운 array를 만들어야함
 const reducer = (state = [], action) => {
   const text = action.text;
+  const id = action.id;
+
   switch (action.type) {
     case ADD:
-      return [...state, { text, id: Date.now() }];
+      return [{ text, id: Date.now() }, ...state];
     case DELETE:
-      return [];
+      return state.filter((toDo) => toDo.id !== id);
     default:
-      console.log("default");
       return state;
   }
 };
 
 const store = createStore(reducer);
 
-store.subscribe(() => console.log(store.getState()));
+const dispatchAddTodo = (text) => {
+  store.dispatch(addTodo(text));
+};
+
+const dispatchDeleteTodo = (e) => {
+  const id = parseInt(e.target.parentNode.id);
+  store.dispatch(deleteTodo(id));
+};
+
+const paintTodo = () => {
+  const toDos = store.getState();
+  ul.innerText = "";
+  toDos.forEach((toDo) => {
+    const li = document.createElement("li");
+    li.innerText = toDo.text;
+    li.id = toDo.id;
+    ul.appendChild(li);
+    const btn = document.createElement("button");
+    li.appendChild(btn);
+    btn.innerText = DELETE;
+    btn.addEventListener("click", dispatchDeleteTodo);
+  });
+};
+
+store.subscribe(paintTodo);
 
 const onSubmit = (e) => {
   e.preventDefault();
-  const text = input.value;
+  const toDo = input.value;
   input.value = "";
-  store.dispatch({ type: ADD, text });
+  dispatchAddTodo(toDo);
 };
 
 form.addEventListener("submit", onSubmit);
-
-const createTodo = () => {
-  const list = store.getState();
-  for (let i = 0; list.length; i++) {
-    const li = document.createElement("li");
-    li.innerText = list[i];
-    ul.appendChild(li);
-  }
-};
-
-// store.subscribe(createTodo);
