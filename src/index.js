@@ -1,6 +1,12 @@
-import { createStore } from "redux";
+// React Redux
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./components/App";
 
-/* // counting example
+ReactDOM.render(<App />, document.getElementById("root"));
+
+/** counting example
+import { createStore } from "redux";
 
 const add = document.getElementById("add");
 const minus = document.getElementById("minus");
@@ -42,7 +48,9 @@ const onChange = () => {
 
 countStore.subscribe(onChange); */
 
-// todo list example
+/**  todo list example 
+import { createStore } from "redux";
+
 const form = document.querySelector("form");
 const input = document.querySelector("input");
 const ul = document.querySelector("ul");
@@ -68,9 +76,11 @@ const reducer = (state = [], action) => {
 
   switch (action.type) {
     case ADD:
-      return [{ text, id: Date.now() }, ...state];
+      const newToDo = { text, id: Date.now() };
+      return [newToDo, ...state];
     case DELETE:
-      return state.filter((toDo) => toDo.id !== id);
+      const cleanToDo = state.filter((toDo) => toDo.id !== id);
+      return cleanToDo;
     default:
       return state;
   }
@@ -112,3 +122,4 @@ const onSubmit = (e) => {
 };
 
 form.addEventListener("submit", onSubmit);
+ */
