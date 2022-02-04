@@ -15,6 +15,7 @@ function Home({ toDos, addToDo }) {
     addToDo(text);
     setText("");
   }
+
   return (
     <>
       <h2>To Do</h2>
